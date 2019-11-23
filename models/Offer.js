@@ -4,6 +4,7 @@ const Offer = mongoose.model("Offer", {
   title: String,
   description: String,
   price: Number,
+  created: String,
   pictures: String
   /*creator: {
     account: {

@@ -75,7 +75,7 @@ const uploadPicture = (req, res, next) => {
           if (error) {
             return res.json({ error: "Upload Error" });
           } else {
-            req.pictures = result.secure_url;
+            req.pictures = await result.secure_url; // ??? il faut un await???
             next();
           }
         }
@@ -90,12 +90,19 @@ const uploadPicture = (req, res, next) => {
   }
 };
 // Création des routes
-// ================================ Route Get ===========
+// ================================ Route Offers ==========
 
-app.get("/", (req, res) => {
-  // req = request
-  // res = response
-  res.json({ message: "Hello World" });
+app.get("/api/offers", async (req, res) => {
+  console.log("Route offers OK");
+
+  try {
+    const offers = await Offer.find({});
+    console.log(offers);
+
+    res.json(offers);
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
 });
 
 // ================================ Route Sign_up =======
@@ -176,6 +183,7 @@ app.post(
         /* pictures: req.pictures */
       });
       offer.pictures = req.pictures;
+      offer.created = new Date();
       await offer.save();
       res.json({ message: "Offer is published" });
     } catch (e) {
