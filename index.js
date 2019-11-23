@@ -92,14 +92,30 @@ const uploadPicture = (req, res, next) => {
 // Création des routes
 // ================================ Route Offers ==========
 
-app.get("/api/offers", async (req, res) => {
+app.get("/api/offers/with-count", async (req, res) => {
   console.log("Route offers OK");
 
   try {
-    const offers = await Offer.find({});
-    console.log(offers);
+    let offers;
+    let skip = req.query.skip;
+    let limit = req.query.limit;
+    let limitOk = skip + limit;
 
-    res.json(offers);
+    if (req.query.title) {
+      filter = req.query.title;
+      console.log("coucou" + filter);
+
+      offers = await Offer.find(filter);
+    } else {
+      offers = await Offer.find();
+    }
+
+    let response = {
+      count: offers.length,
+      offers: offers.slice(skip, limitOk)
+    };
+
+    res.json(response);
   } catch (e) {
     res.status(400).json({ message: e.message });
   }
