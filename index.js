@@ -14,6 +14,15 @@ mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
+/*mongoose.connect(
+  "mongodb+srv://HugoLattard:180577@cluster0-agmsf.mongodb.net/test",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }
+);*/
+
+//MONGODB_URI=mongodb://heroku_m2nxm2zr:9sbucln17dg7t2714ce2eqt57d@ds053539.mlab.com:53539/heroku_m2nxm2zr
 
 //Importation des modèles
 const Offer = require("./models/Offer");
@@ -101,21 +110,23 @@ app.get("/api/offers/with-count", async (req, res) => {
     let limit = req.query.limit;
     let limitOk = skip + limit;
 
-    if (req.query.title) {
+    /*if (req.query.title) {
       filter = req.query.title;
       console.log("coucou" + filter);
 
       offers = await Offer.find(filter);
-    } else {
-      offers = await Offer.find();
-    }
+    } 
+    else {
+      
+    } */
+    offers = await Offer.find();
 
     let response = {
       count: offers.length,
       offers: offers.slice(skip, limitOk)
     };
 
-    res.json(response);
+    await res.json(response);
   } catch (e) {
     res.status(400).json({ message: e.message });
   }
@@ -157,10 +168,13 @@ app.post("/api/user/sign_up", async (req, res) => {
 
 app.post("/api/user/log_in", async (req, res) => {
   console.log("route log_in OK");
+
   try {
     await User.findOne({ email: req.fields.email }).exec(function(err, user) {
       if (err) return next(err.message);
+
       if (user) {
+        console.log("jusqu'ici tout va bien");
         if (
           SHA256(req.fields.password + user.salt).toString(encBase64) ===
           user.hash
@@ -174,7 +188,9 @@ app.post("/api/user/log_in", async (req, res) => {
           return res.status(401).json({ error: "Unauthorized" });
         }
       } else {
-        return next("User not found");
+        /*return next("User not found"); CE NEXT FAIT BUGGER SI PAS DE USER */
+
+        return res.json({ message: "user not found" }); // Pourquoi l'erreur n'est pas passée dans le catch??
       }
     });
   } catch (e) {
