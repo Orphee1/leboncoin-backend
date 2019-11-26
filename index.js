@@ -79,7 +79,7 @@ const uploadPicture = (req, res, next) => {
   try {
     if (Object.keys(req.files).length) {
       cloudinary.uploader.upload(
-        req.files.pictures.path,
+        req.files.pictures.path, // ce pictures, c'est celui renseigné en param du form data en front
         async (error, result) => {
           if (error) {
             return res.json({ error: "Upload Error" });
@@ -218,6 +218,7 @@ app.post(
       offer.created = new Date();
       await offer.save();
       res.json({ message: "Offer is published" });
+      console.log("publish oK");
     } catch (e) {
       res.status(400).json({ message: "An error occurred" });
     }
