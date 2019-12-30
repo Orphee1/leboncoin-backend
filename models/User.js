@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const User = mongoose.model("User", {
   email: String,
-  username: String, // Je n'ai pas à créer l'ID??
+  username: String,
   hash: String,
   salt: String,
   token: String
