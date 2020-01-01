@@ -72,7 +72,23 @@ const uploadPicture = (req, res, next) => {
   }
 };
 
-// Read ================================================================= Offer ??
+// Read =================================================================
+router.get("/api/offer", async (req, res) => {
+  console.log("route Offer OK");
+
+  try {
+    const id = req.query.id;
+    console.log(id);
+    let offerToFind = await Offer.findById(id);
+    if (offerToFind) {
+      res.status(200).json(offerToFind);
+    } else {
+      res.status(400).json({ message: "Product not found" });
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
 
 // Create ===============================================================
 

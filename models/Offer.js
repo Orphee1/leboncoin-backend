@@ -1,18 +1,5 @@
 const mongoose = require("mongoose");
 
-// const Offer = mongoose.model("Offer", {
-//   title: String,
-//   description: String,
-//   price: Number,
-//   created: String,
-//   pictures: String
-//   /*creator: {
-//     account: {
-//       username: String
-//     }
-//   }*/
-// });
-
 const Offer = mongoose.model("Offer", {
   title: {
     type: String,
