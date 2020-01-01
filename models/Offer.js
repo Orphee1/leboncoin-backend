@@ -28,13 +28,16 @@ const Offer = mongoose.model("Offer", {
   location: {
     type: String,
     default: ""
+  },
+  creator: {
+    type: String,
+    required: true
   }
-
-  /*creator: {
-    account: {
-      username: String
-    }
-  }*/
+  // creator: {
+  //   account: {
+  //     username: String
+  //     // required: true
+  //   }
 });
 
 module.exports = Offer;

@@ -38,6 +38,7 @@ const authenticate = async (req, res, next) => {
   }
   const token = parts[1];
   const user = await User.findOne({ token });
+  // console.log(user);
   if (!user) {
     res.status(401).json({
       error: "Invalid Token"
@@ -80,6 +81,18 @@ router.get("/api/offer", async (req, res) => {
     const id = req.query.id;
     console.log(id);
     let offerToFind = await Offer.findById(id);
+    let user = offerToFind.creator;
+    console.log(user);
+
+    // let announces = Offer.find().populate({ creator: user });
+    // let announces = Offer.find().populate({ path: user });
+    // let announces = Offer.find({ user });
+
+    // console.log(announces);
+    // let announceNumber = [];
+    // announceNumber.push(announces);
+    // console.log(announceNumber.length);
+
     if (offerToFind) {
       res.status(200).json(offerToFind);
     } else {
@@ -98,7 +111,13 @@ router.post(
   uploadPicture,
   async (req, res) => {
     console.log("route publish OK");
+
     try {
+      const parts = req.headers.authorization.split(" ");
+      const token = parts[1];
+      const user = await User.findOne({ token });
+      console.log(user.username);
+
       const { title, description, price, category, location } = req.fields;
       const offer = new Offer({
         title,
@@ -112,17 +131,17 @@ router.post(
       // const date = new Date().toDateString();
       const date = new Date();
       const year = date.getFullYear();
-      const month = date.getMonth();
+      const month = date.getMonth() + 1;
       const day = date.getDate();
       const hour = date.getHours();
       const min = date.getMinutes();
 
       let dateDisplay = "";
       dateDisplay += day + "/" + month + "/" + year + " à " + hour + ":" + min;
-      console.log(dateDisplay);
 
       offer.created = dateDisplay;
-      console.log(offer.created); //
+      offer.creator = user.username;
+
       await offer.save();
       res.json({ message: "Offer is published" });
     } catch (e) {
