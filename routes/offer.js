@@ -84,17 +84,16 @@ router.get("/api/offer", async (req, res) => {
     let user = offerToFind.creator;
     console.log(user);
 
-    // let announces = Offer.find().populate({ creator: user });
-    // let announces = Offer.find().populate({ path: user });
-    // let announces = Offer.find({ user });
-
-    // console.log(announces);
-    // let announceNumber = [];
-    // announceNumber.push(announces);
-    // console.log(announceNumber.length);
+    // get all announces from the creator
+    const query = Offer.find({ creator: user }); //
+    query.getFilter();
+    const offersFromCreator = await query.exec();
+    // console.log(offersFromCreator);
+    const announcesNumber = offersFromCreator.length;
+    console.log(announcesNumber);
 
     if (offerToFind) {
-      res.status(200).json(offerToFind);
+      res.status(200).json([offerToFind, announcesNumber]);
     } else {
       res.status(400).json({ message: "Product not found" });
     }

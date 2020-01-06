@@ -29,6 +29,10 @@ const Offer = mongoose.model("Offer", {
     type: String,
     default: ""
   },
+  // creator: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "User"
+  // }
   creator: {
     type: String,
     required: true
