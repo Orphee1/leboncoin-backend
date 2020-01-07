@@ -8,18 +8,31 @@ router.use(formidableMiddleware());
 const Offer = require("../models/Offer");
 const User = require("../models/User");
 
-const createFilters = req => {
-  const filters = {};
-  if (req.query.title) {
-    filters.title = new RegExp(req.query.title, "i");
-  }
-  return filters;
-};
-
 // Read =================================================================
 
 router.get("/api/offers/with-count", async (req, res) => {
   console.log("Route offers OK");
+  // console.log(req);
+  console.log(req.query);
+
+  // Création du filtre
+  const createFilters = req => {
+    const filters = {};
+    if (req.query.title) {
+      filters.title = new RegExp(req.query.title, "i");
+    }
+    if (req.query.priceMin) {
+      filters.price = {};
+      filters.price.$gte = req.query.priceMin;
+    }
+    if (req.query.priceMax) {
+      if (filters.price === undefined) {
+        filters.price = {};
+      }
+      filters.price.$lte = req.query.priceMax;
+    }
+    return filters;
+  };
 
   try {
     let offers;
@@ -27,11 +40,32 @@ router.get("/api/offers/with-count", async (req, res) => {
     let limit = req.query.limit;
     let limitOk = Number(skip) + Number(limit);
 
-    if (req.query.title) {
+    if (req.query) {
+      console.log(req.query);
       const filters = createFilters(req);
       console.log(filters);
 
       offers = await Offer.find(filters);
+      console.log(offers);
+
+      if (req.query.priceSort) {
+        console.log(req.query.priceSort);
+        if (req.query.priceSort === "price-asc") {
+          console.log("On est bien ici");
+          offers.sort(function(a, b) {
+            return a.price - b.price;
+          });
+          // offers.sort({ price: 1 });
+        }
+        if (req.query.priceSort === "price-desc") {
+          console.log("On est bien là");
+          offers.sort(function(a, b) {
+            return b.price - a.price;
+          });
+          // offers.sort({ price: -1 });
+        }
+        console.log(offers);
+      }
     } else {
       console.log("here we are");
       offers = await Offer.find();
@@ -42,6 +76,9 @@ router.get("/api/offers/with-count", async (req, res) => {
       // offers: offers
       offers: offers.slice(skip, limitOk)
     };
+    console.log(skip);
+    console.log(limitOk);
+
     console.log(response);
     await res.json(response);
   } catch (e) {
