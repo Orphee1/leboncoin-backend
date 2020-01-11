@@ -26,10 +26,12 @@ router.get("/api/offers/with-count", async (req, res) => {
       filters.price.$gte = req.query.priceMin;
     }
     if (req.query.priceMax) {
-      if (filters.price === undefined) {
-        filters.price = {};
+      if (req.query.priceMax !== "----") {
+        if (filters.price === undefined) {
+          filters.price = {};
+        }
+        filters.price.$lte = req.query.priceMax;
       }
-      filters.price.$lte = req.query.priceMax;
     }
     return filters;
   };
@@ -41,30 +43,61 @@ router.get("/api/offers/with-count", async (req, res) => {
     let limitOk = Number(skip) + Number(limit);
 
     if (req.query) {
-      console.log(req.query);
       const filters = createFilters(req);
       console.log(filters);
 
       offers = await Offer.find(filters);
-      console.log(offers);
+      // console.log(offers);
 
       if (req.query.priceSort) {
-        console.log(req.query.priceSort);
         if (req.query.priceSort === "price-asc") {
-          console.log("On est bien ici");
           offers.sort(function(a, b) {
             return a.price - b.price;
           });
           // offers.sort({ price: 1 });
         }
         if (req.query.priceSort === "price-desc") {
-          console.log("On est bien là");
           offers.sort(function(a, b) {
             return b.price - a.price;
           });
           // offers.sort({ price: -1 });
         }
-        console.log(offers);
+      }
+      if (req.query.dateSort) {
+        console.log(req.query.dateSort);
+        if (req.query.dateSort === "date-desc") {
+          console.log("On est bien ici");
+          offers.sort(function(a, b) {
+            // return a.created - b.created;
+            var aa = a.created
+                .split("/")
+                .reverse()
+                .join(),
+              bb = b.created
+                .split("/")
+                .reverse()
+                .join();
+            return bb < aa ? -1 : bb > aa ? 1 : 0;
+          });
+          // offers.sort({ created: -1 });
+        }
+        if (req.query.dateSort === "date-asc") {
+          console.log(req.query.dateSort);
+          console.log("On est bien là");
+          offers.sort(function(a, b) {
+            // return b.created - a.created;
+            var aa = a.created
+                .split("/")
+                .reverse()
+                .join(),
+              bb = b.created
+                .split("/")
+                .reverse()
+                .join();
+            return aa < bb ? -1 : aa > bb ? 1 : 0;
+          });
+          // offers.sort({ created: 1 });
+        }
       }
     } else {
       console.log("here we are");
@@ -79,7 +112,7 @@ router.get("/api/offers/with-count", async (req, res) => {
     console.log(skip);
     console.log(limitOk);
 
-    console.log(response);
+    // console.log(response);
     await res.json(response);
   } catch (e) {
     res.status(400).json({ message: e.message });
