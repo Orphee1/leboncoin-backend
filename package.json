@@ -1,37 +1,40 @@
 {
-  "name": "leboncoin-back-end",
-  "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js",
-    "start": "node index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Orphee1/Leboncoin-backend.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Orphee1/Leboncoin-backend/issues"
-  },
-  "homepage": "https://github.com/Orphee1/Leboncoin-backend#readme",
-  "dependencies": {
-    "body-parser": "^1.19.0",
-    "cloudinary": "^1.17.0",
-    "cors": "^2.8.5",
-    "crypto-js": "^3.1.9-1",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "express-formidable": "^1.2.0",
-    "mongoose": "^5.7.12",
-    "sha256": "^0.2.0",
-    "uid2": "0.0.3"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.0"
-  }
+      "name": "leboncoin-back-end",
+      "version": "1.0.0",
+      "engines": {
+            "node": "10.16.3"
+      },
+      "description": "",
+      "main": "server.js",
+      "scripts": {
+            "test": "echo \"Error: no test specified\" && exit 1",
+            "dev": "nodemon index.js",
+            "start": "node index.js"
+      },
+      "repository": {
+            "type": "git",
+            "url": "git+https://github.com/Orphee1/Leboncoin-backend.git"
+      },
+      "keywords": [],
+      "author": "",
+      "license": "ISC",
+      "bugs": {
+            "url": "https://github.com/Orphee1/Leboncoin-backend/issues"
+      },
+      "homepage": "https://github.com/Orphee1/Leboncoin-backend#readme",
+      "dependencies": {
+            "body-parser": "^1.19.0",
+            "cloudinary": "^1.17.0",
+            "cors": "^2.8.5",
+            "crypto-js": "^3.1.9-1",
+            "dotenv": "^8.2.0",
+            "express": "^4.17.1",
+            "express-formidable": "^1.2.0",
+            "mongoose": "^5.7.12",
+            "sha256": "^0.2.0",
+            "uid2": "0.0.3"
+      },
+      "devDependencies": {
+            "nodemon": "^2.0.0"
+      }
 }

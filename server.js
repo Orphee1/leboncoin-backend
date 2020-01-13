@@ -12,12 +12,12 @@ app.use(formidableMiddleware());
 // Database config
 const mongoose = require("mongoose");
 mongoose.connect(
-  process.env.MONGODB_URI,
+      process.env.MONGODB_URI,
 
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  }
+      {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+      }
 );
 
 // Loading models
@@ -36,5 +36,5 @@ app.use(userRoutes);
 
 // Port definition
 app.listen(process.env.PORT, () => {
-  console.log("Server has started on port " + process.env.PORT);
+      console.log("Server has started on port " + process.env.PORT);
 });
