@@ -34,6 +34,16 @@ app.use(offerRoutes);
 app.use(offersRoutes);
 app.use(userRoutes);
 
+// Test Route
+app.get("/", async (req, res) => {
+      try {
+            res.json({ message: "hello Leboncoin" });
+      } catch (error) {
+            console.log(error.message);
+            res.status(400).json(error.message);
+      }
+});
+
 // Port definition
 app.listen(process.env.PORT, () => {
       console.log("Server has started on port " + process.env.PORT);
