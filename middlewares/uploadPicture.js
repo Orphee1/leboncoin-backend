@@ -12,12 +12,12 @@ module.exports = (req, res, next) => {
       try {
             if (Object.keys(req.files).length) {
                   cloudinary.uploader.upload(
-                        req.files.pictures.path, // ce pictures, c'est celui renseigné en param du form data en front
+                        req.files.pictures.path,
                         async (error, result) => {
                               if (error) {
                                     return res.json({ error: "Upload Error" });
                               } else {
-                                    req.pictures = await result.secure_url; // ??? il faut un await???
+                                    req.pictures = await result.secure_url;
                                     next();
                               }
                         }

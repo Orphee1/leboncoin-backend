@@ -12,7 +12,8 @@ const User = require("../models/User");
 
 router.get("/api/offers/with-count", async (req, res) => {
       console.log("Route offers OK");
-      // console.log(req);
+      // res.status(200).json({ message: "route Offers Super OK" });
+
       console.log(req.query);
 
       // Création du filtre
@@ -20,6 +21,10 @@ router.get("/api/offers/with-count", async (req, res) => {
             const filters = {};
             if (req.query.title) {
                   filters.title = new RegExp(req.query.title, "i");
+            }
+
+            if (req.query.category) {
+                  filters.category = req.query.category;
             }
             if (req.query.priceMin) {
                   filters.price = {};
@@ -47,7 +52,7 @@ router.get("/api/offers/with-count", async (req, res) => {
                   console.log(filters);
 
                   offers = await Offer.find(filters);
-                  // console.log(offers);
+                  console.log(offers);
 
                   if (req.query.sort) {
                         if (req.query.sort === "price-asc") {
