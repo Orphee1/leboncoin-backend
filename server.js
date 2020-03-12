@@ -4,10 +4,10 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const formidableMiddleware = require("express-formidable");
+const bodyParser = require("body-parser");
 
 const app = express();
 app.use(cors());
-app.use(formidableMiddleware());
 
 // Database config
 const mongoose = require("mongoose");
