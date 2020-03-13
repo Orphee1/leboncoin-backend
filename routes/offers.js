@@ -3,7 +3,7 @@ const formidableMiddleware = require("express-formidable");
 const bodyParser = require("body-parser");
 
 const router = express.Router();
-router.use(formidableMiddleware());
+// router.use(formidableMiddleware());
 // router.use(bodyParser.json());
 
 //Importation des modèles
@@ -25,7 +25,10 @@ router.get("/api/offers/with-count/", async (req, res) => {
                   filters.title = new RegExp(req.query.title, "i");
             }
 
-            if (req.query.category !== "undefined") {
+            if (
+                  req.query.category !== "undefined" &&
+                  req.query.category !== "Catégories"
+            ) {
                   filters.category = req.query.category;
             }
             if (req.query.priceMin !== "undefined") {

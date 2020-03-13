@@ -9,7 +9,7 @@ const bodyParser = require("body-parser");
 
 app.use(cors());
 app.use(bodyParser.json());
-
+app.use(formidableMiddleware());
 // Database config
 const mongoose = require("mongoose");
 mongoose.connect(
