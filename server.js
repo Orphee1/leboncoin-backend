@@ -3,11 +3,12 @@ require("dotenv").config();
 // Server creation
 const express = require("express");
 const cors = require("cors");
+const app = express();
 const formidableMiddleware = require("express-formidable");
 const bodyParser = require("body-parser");
 
-const app = express();
 app.use(cors());
+app.use(bodyParser.json());
 
 // Database config
 const mongoose = require("mongoose");
@@ -21,6 +22,7 @@ mongoose.connect(
 );
 
 // Loading models
+const Category = require("./models/Category");
 const Offer = require("./models/Offer");
 const User = require("./models/User");
 
@@ -28,11 +30,13 @@ const User = require("./models/User");
 const offerRoutes = require("./routes/offer");
 const offersRoutes = require("./routes/offers");
 const userRoutes = require("./routes/user");
+const categoryRoutes = require("./routes/category");
 
 // Use Routes
 app.use(offerRoutes);
 app.use(offersRoutes);
 app.use(userRoutes);
+app.use(categoryRoutes);
 
 // Test Route
 app.get("/", async (req, res) => {

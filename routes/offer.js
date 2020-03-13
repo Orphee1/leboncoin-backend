@@ -1,5 +1,5 @@
 const express = require("express");
-const formidableMiddleware = require("express-formidable"); // Permet le parsing ?? la récupération de files
+const formidableMiddleware = require("express-formidable");
 
 const SHA256 = require("crypto-js/sha256"); // Crypto hash generator
 const encBase64 = require("crypto-js/enc-base64");
@@ -122,5 +122,11 @@ router.post(
             }
       }
 );
+
+// Update ===============================================================
+router.post("/api/offer/update", async (req, res) => {
+      console.log("route offer update OK");
+      res.status(200).json({ message: "route update OK" });
+});
 
 module.exports = router;

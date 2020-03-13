@@ -12,32 +12,32 @@ const User = require("../models/User");
 
 // Read =================================================================
 
-router.post("/api/offers/with-count/", async (req, res) => {
+router.get("/api/offers/with-count/", async (req, res) => {
       console.log("Route offers OK");
-      // res.status(200).json({ message: "route offers OK" });
-
-      console.log(req.fields);
+      console.log(req.query);
 
       // Création du filtre
       const createFilters = req => {
             const filters = {};
-            if (req.fields.searchTitle) {
-                  filters.title = new RegExp(req.fields.searchTitle, "i");
+            if (req.query.title !== "undefined") {
+                  console.log("here we are ");
+
+                  filters.title = new RegExp(req.query.title, "i");
             }
 
-            if (req.fields.category) {
-                  filters.category = req.fields.category;
+            if (req.query.category !== "undefined") {
+                  filters.category = req.query.category;
             }
-            if (req.fields.priceMin) {
+            if (req.query.priceMin !== "undefined") {
                   filters.price = {};
-                  filters.price.$gte = req.fields.priceMin;
+                  filters.price.$gte = req.query.priceMin;
             }
-            if (req.fields.priceMax) {
-                  if (req.fields.priceMax !== "----") {
+            if (req.query.priceMax !== "undefined") {
+                  if (req.query.priceMax !== "----") {
                         if (filters.price === undefined) {
                               filters.price = {};
                         }
-                        filters.price.$lte = req.fields.priceMax;
+                        filters.price.$lte = req.query.priceMax;
                   }
             }
             console.log(filters);
@@ -46,31 +46,33 @@ router.post("/api/offers/with-count/", async (req, res) => {
 
       try {
             let offers;
-            let skip = req.fields.skip;
-            let limit = req.fields.limit;
+            let skip = req.query.skip;
+            let limit = req.query.limit;
             let limitOk = Number(skip) + Number(limit);
 
-            if (req.fields) {
+            if (req.query) {
                   const filters = createFilters(req);
-                  // console.log(filters);
+                  console.log("Here we are");
+
+                  console.log(filters);
 
                   offers = await Offer.find(filters);
                   // console.log(offers);
 
-                  if (req.fields.sort) {
-                        if (req.fields.sort === "price-asc") {
+                  if (req.query.sort !== "undefined") {
+                        if (req.query.sort === "price-asc") {
                               offers.sort(function(a, b) {
                                     return a.price - b.price;
                               });
                               // offers.sort({ price: 1 });
                         }
-                        if (req.fields.sort === "price-desc") {
+                        if (req.query.sort === "price-desc") {
                               offers.sort(function(a, b) {
                                     return b.price - a.price;
                               });
                               // offers.sort({ price: -1 });
                         }
-                        if (req.fields.sort === "date-desc") {
+                        if (req.query.sort === "date-desc") {
                               console.log("On est bien ici");
                               offers.sort(function(a, b) {
                                     // return a.created - b.created;
@@ -87,7 +89,7 @@ router.post("/api/offers/with-count/", async (req, res) => {
                               // offers.sort({ created: -1 });
                         }
 
-                        if (req.fields.sort === "date-asc") {
+                        if (req.query.sort === "date-asc") {
                               console.log("On est bien là");
                               offers.sort(function(a, b) {
                                     // return b.created - a.created;
