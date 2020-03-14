@@ -11,6 +11,7 @@ router.use(formidableMiddleware());
 //Importation des modèles
 const Offer = require("../models/Offer");
 const User = require("../models/User");
+const Category = require("../models/Category");
 
 // Importation des middlewares
 const authenticate = require("../middlewares/authenticate.js");
@@ -64,18 +65,27 @@ router.post(
                         title,
                         description,
                         price,
-                        category,
+                        // category,
                         location
                   } = req.fields;
+
+                  const category = await Category.findOne({
+                        title: req.fields.category
+                  });
+                  console.log(category);
                   const offer = new Offer({
                         title,
                         description,
                         price,
-                        category,
+                        // category,
                         location
                         /* pictures: req.pictures */
                   });
                   offer.pictures = req.pictures;
+                  offer.category = {
+                        _id: category,
+                        name: req.fields.category
+                  };
                   // const date = new Date().toDateString();
                   const date = new Date();
                   let year = date.getFullYear();
@@ -126,7 +136,24 @@ router.post(
 // Update ===============================================================
 router.post("/api/offer/update", async (req, res) => {
       console.log("route offer update OK");
-      res.status(200).json({ message: "route update OK" });
+
+      try {
+            let id = req.query.id;
+            console.log(id);
+            let category = req.fields.category;
+            console.log(category);
+            let offerToUpdate = await Offer.findById(id);
+            console.log(offerToUpdate);
+
+            if (category) {
+                  offerToUpdate.category = category;
+            }
+            await offerToUpdate.save();
+            res.status(200).json(offerToUpdate);
+      } catch (error) {
+            console.log(error);
+            res.status(400).json({ message: error.message });
+      }
 });
 
 module.exports = router;
