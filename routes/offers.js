@@ -35,7 +35,11 @@ router.post("/api/offers/with-count/", async (req, res) => {
                   req.fields.category !== "Catégories"
             ) {
                   // filters.category = req.query.category;
-                  filters.category = req.fields.category;
+                  // filters.category = req.fields.category;
+                  filters.category = {
+                        _id: "5e6ceeef2035382848413f19",
+                        name: req.fields.category
+                  };
             }
             if (
                   // (req.query.priceMin !== "undefined")
@@ -81,8 +85,8 @@ router.post("/api/offers/with-count/", async (req, res) => {
 
                   console.log(filters);
 
-                  offers = await Offer.find(filters);
-                  // console.log(offers);
+                  offers = await Offer.find(filters).populate("category");
+                  console.log(offers);
 
                   if (
                         // (req.query.sort !== "undefined")
@@ -148,7 +152,7 @@ router.post("/api/offers/with-count/", async (req, res) => {
                   }
             } else {
                   console.log("here we are");
-                  offers = await Offer.find();
+                  offers = await Offer.find().populate("category");
             }
 
             let response = {

@@ -21,15 +21,10 @@ const Offer = mongoose.model("Offer", {
             type: String,
             default: ""
       },
+
       category: {
-            _id: {
-                  type: mongoose.Schema.Types.ObjectId,
-                  ref: "Category"
-            },
-            name: {
-                  type: String,
-                  default: ""
-            }
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Category"
       },
 
       location: {

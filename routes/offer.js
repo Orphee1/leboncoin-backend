@@ -25,6 +25,7 @@ router.get("/api/offer", async (req, res) => {
             const id = req.query.id;
             console.log(id);
             let offerToFind = await Offer.findById(id);
+
             let user = offerToFind.creator;
             console.log(user);
 
@@ -61,13 +62,7 @@ router.post(
                   const user = await User.findOne({ token });
                   console.log(user.username);
 
-                  const {
-                        title,
-                        description,
-                        price,
-                        // category,
-                        location
-                  } = req.fields;
+                  const { title, description, price, location } = req.fields;
 
                   const category = await Category.findOne({
                         title: req.fields.category
@@ -77,15 +72,12 @@ router.post(
                         title,
                         description,
                         price,
-                        // category,
+                        category,
                         location
                         /* pictures: req.pictures */
                   });
                   offer.pictures = req.pictures;
-                  offer.category = {
-                        _id: category,
-                        name: req.fields.category
-                  };
+
                   // const date = new Date().toDateString();
                   const date = new Date();
                   let year = date.getFullYear();
@@ -133,6 +125,24 @@ router.post(
       }
 );
 
+// Delete ===============================================================
+router.post("/api/offer/delete", async (req, res) => {
+      console.log("route offer delete OK");
+
+      try {
+            let id = req.query.id;
+            console.log(id);
+
+            let offerToDelete = await Offer.findById(id);
+            console.log(offerToDelete);
+            await offerToDelete.remove();
+            res.status(200).json({ message: "Offer removed" });
+      } catch (error) {
+            console.log(error);
+            res.status(400).json({ message: error.message });
+      }
+});
+
 // Update ===============================================================
 router.post("/api/offer/update", async (req, res) => {
       console.log("route offer update OK");
@@ -140,8 +150,12 @@ router.post("/api/offer/update", async (req, res) => {
       try {
             let id = req.query.id;
             console.log(id);
-            let category = req.fields.category;
+            const category = await Category.findOne({
+                  title: req.fields.category
+            });
+
             console.log(category);
+
             let offerToUpdate = await Offer.findById(id);
             console.log(offerToUpdate);
 
