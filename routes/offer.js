@@ -24,7 +24,7 @@ router.get("/api/offer", async (req, res) => {
       try {
             const id = req.query.id;
             console.log(id);
-            let offerToFind = await Offer.findById(id);
+            const offerToFind = await Offer.findById(id);
 
             let user = offerToFind.creator;
             console.log(user);
@@ -37,8 +37,18 @@ router.get("/api/offer", async (req, res) => {
             const announcesNumber = offersFromCreator.length;
             console.log(announcesNumber);
 
+            // get creator's token
+            const userToFind = await User.findOne({ username: user });
+            // console.log(userToFind);
+            const tokenToSend = userToFind.token;
+            // console.log(tokenToSend);
+
             if (offerToFind) {
-                  res.status(200).json([offerToFind, announcesNumber]);
+                  res.status(200).json([
+                        offerToFind,
+                        announcesNumber,
+                        tokenToSend
+                  ]);
             } else {
                   res.status(400).json({ message: "Product not found" });
             }
