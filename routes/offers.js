@@ -7,6 +7,7 @@ const router = express.Router();
 // router.use(bodyParser.json());
 
 //Importation des modèles
+const Category = require("../models/Category");
 const Offer = require("../models/Offer");
 const User = require("../models/User");
 
@@ -18,55 +19,60 @@ router.post("/api/offers/with-count/", async (req, res) => {
       console.log(req.fields);
 
       // Création du filtre
-      const createFilters = req => {
-            const filters = {};
-            if (
-                  // (req.query.title !== "undefined")
-                  req.fields.title
-            ) {
-                  // filters.title = new RegExp(req.query.title, "i");
-                  filters.title = new RegExp(req.fields.title, "i");
-            }
+      // const createFilters = async req => {
+      //       const filters = {};
+      //       if (
+      //             // (req.query.title !== "undefined")
+      //             req.fields.title
+      //       ) {
+      //             // filters.title = new RegExp(req.query.title, "i");
+      //             filters.title = new RegExp(req.fields.title, "i");
+      //       }
 
-            if (
-                  // req.query.category !== "undefined" &&
-                  // req.query.category !== "Catégories"
-                  req.fields.category &&
-                  req.fields.category !== "Catégories"
-            ) {
-                  // filters.category = req.query.category;
-                  // filters.category = req.fields.category;
-                  filters.category = {
-                        _id: "5e6ceeef2035382848413f19",
-                        name: req.fields.category
-                  };
-            }
-            if (
-                  // (req.query.priceMin !== "undefined")
-                  req.fields.priceMin
-            ) {
-                  filters.price = {};
-                  // filters.price.$gte = req.query.priceMin;
-                  filters.price.$gte = req.fields.priceMin;
-            }
-            if (
-                  // (req.query.priceMax !== "undefined")
-                  req.fields.priceMax
-            ) {
-                  if (
-                        // (req.query.priceMax !== "----")
-                        req.fields.priceMax !== "----"
-                  ) {
-                        if (filters.price === undefined) {
-                              filters.price = {};
-                        }
-                        // filters.price.$lte = req.query.priceMax;
-                        filters.price.$lte = req.fields.priceMax;
-                  }
-            }
-            console.log(filters);
-            return filters;
-      };
+      //       if (
+      //             // req.query.category !== "undefined" &&
+      //             // req.query.category !== "Catégories"
+      //             req.fields.category &&
+      //             req.fields.category !== "Catégories"
+      //       ) {
+      //             // Obtenir l'id de la catégory
+      //             let category = await Category.findOne({
+      //                   title: req.fields.category
+      //             });
+
+      //             console.log(category);
+      //             console.log(category._id);
+
+      //             filters.category = category._id;
+      //             // filters.category = {};
+      //             // filters.category.title = req.fields.category;
+      //       }
+      //       if (
+      //             // (req.query.priceMin !== "undefined")
+      //             req.fields.priceMin
+      //       ) {
+      //             filters.price = {};
+      //             // filters.price.$gte = req.query.priceMin;
+      //             filters.price.$gte = req.fields.priceMin;
+      //       }
+      //       if (
+      //             // (req.query.priceMax !== "undefined")
+      //             req.fields.priceMax
+      //       ) {
+      //             if (
+      //                   // (req.query.priceMax !== "----")
+      //                   req.fields.priceMax !== "----"
+      //             ) {
+      //                   if (filters.price === undefined) {
+      //                         filters.price = {};
+      //                   }
+      //                   // filters.price.$lte = req.query.priceMax;
+      //                   filters.price.$lte = req.fields.priceMax;
+      //             }
+      //       }
+      //       console.log(filters);
+      //       return filters;
+      // };
 
       try {
             let offers;
@@ -80,12 +86,61 @@ router.post("/api/offers/with-count/", async (req, res) => {
                   // (req.query)
                   req.fields
             ) {
-                  const filters = createFilters(req);
+                  // const filters = createFilters(req);
                   console.log("Here we are");
 
+                  const filters = {};
+                  if (
+                        // (req.query.title !== "undefined")
+                        req.fields.title
+                  ) {
+                        // filters.title = new RegExp(req.query.title, "i");
+                        filters.title = new RegExp(req.fields.title, "i");
+                  }
+
+                  if (
+                        // req.query.category !== "undefined" &&
+                        // req.query.category !== "Catégories"
+                        req.fields.category &&
+                        req.fields.category !== "Catégories"
+                  ) {
+                        // Obtenir l'id de la catégory
+                        let category = await Category.findOne({
+                              title: req.fields.category
+                        });
+
+                        filters.category = category._id;
+                        // filters.category = {};
+                        // filters.category.title = req.fields.category;
+                  }
+                  if (
+                        // (req.query.priceMin !== "undefined")
+                        req.fields.priceMin
+                  ) {
+                        filters.price = {};
+                        // filters.price.$gte = req.query.priceMin;
+                        filters.price.$gte = req.fields.priceMin;
+                  }
+                  if (
+                        // (req.query.priceMax !== "undefined")
+                        req.fields.priceMax
+                  ) {
+                        if (
+                              // (req.query.priceMax !== "----")
+                              req.fields.priceMax !== "----"
+                        ) {
+                              if (filters.price === undefined) {
+                                    filters.price = {};
+                              }
+                              // filters.price.$lte = req.query.priceMax;
+                              filters.price.$lte = req.fields.priceMax;
+                        }
+                  }
                   console.log(filters);
 
+                  // this populate allows front-end to get category.title
                   offers = await Offer.find(filters).populate("category");
+
                   console.log(offers);
 
                   if (
@@ -152,6 +207,7 @@ router.post("/api/offers/with-count/", async (req, res) => {
                   }
             } else {
                   console.log("here we are");
+                  // this populate allows front-end to get category.title
                   offers = await Offer.find().populate("category");
             }
 
