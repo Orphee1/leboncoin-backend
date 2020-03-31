@@ -35,16 +35,14 @@ router.post("/api/user/log_in", async (req, res) => {
                                     _id: user._id,
                                     token: user.token,
                                     account: user.account
-                              }); // Ce return ne marche pas why ??
+                              });
                         } else {
                               return res
                                     .status(401)
                                     .json({ error: "Unauthorized" });
                         }
                   } else {
-                        /*return next("User not found"); CE NEXT FAIT BUGGER SI PAS DE USER */
-
-                        return res.json({ message: "user not found" }); // Pourquoi l'erreur n'est pas passée dans le catch??
+                        return res.json({ message: "user not found" });
                   }
             });
       } catch (e) {
