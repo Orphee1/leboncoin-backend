@@ -4,12 +4,11 @@ const formidableMiddleware = require("express-formidable");
 const router = express.Router();
 router.use(formidableMiddleware());
 
-const SHA256 = require("crypto-js/sha256"); // Crypto hash generator
+const SHA256 = require("crypto-js/sha256");
 const encBase64 = require("crypto-js/enc-base64");
 const uid2 = require("uid2");
 
-//Importation des modèles
-const Offer = require("../models/Offer");
+// Model import
 const User = require("../models/User");
 
 // Read =======================================================================
@@ -18,14 +17,13 @@ router.post("/api/user/log_in", async (req, res) => {
       console.log("route log_in OK");
 
       try {
-            await User.findOne({ email: req.fields.email }).exec(function(
+            await User.findOne({ email: req.fields.email }).exec(function (
                   err,
                   user
             ) {
                   if (err) return next(err.message);
 
                   if (user) {
-                        console.log("jusqu'ici tout va bien");
                         if (
                               SHA256(req.fields.password + user.salt).toString(
                                     encBase64
@@ -34,7 +32,7 @@ router.post("/api/user/log_in", async (req, res) => {
                               return res.json({
                                     _id: user._id,
                                     token: user.token,
-                                    account: user.account
+                                    account: user.account,
                               });
                         } else {
                               return res
@@ -65,17 +63,16 @@ router.post("/api/user/sign_up", async (req, res) => {
                   username: req.fields.username,
                   hash: hash,
                   salt: salt,
-                  token: token
+                  token: token,
             });
-            console.log("test from front " + token);
 
             await newUser.save();
             res.json({
                   _id: newUser._id,
                   token: newUser.token,
                   account: {
-                        username: newUser.username
-                  }
+                        username: newUser.username,
+                  },
             });
       } catch (e) {
             console.error(e.message);

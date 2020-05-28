@@ -3,13 +3,10 @@ const formidableMiddleware = require("express-formidable");
 const bodyParser = require("body-parser");
 
 const router = express.Router();
-// router.use(formidableMiddleware());
-// router.use(bodyParser.json());
 
-//Importation des modèles
+// Models import
 const Category = require("../models/Category");
 const Offer = require("../models/Offer");
-const User = require("../models/User");
 
 // Read =================================================================
 
@@ -18,121 +15,41 @@ router.post("/api/offers/with-count/", async (req, res) => {
 
       console.log(req.fields);
 
-      // Création du filtre
-      // const createFilters = async req => {
-      //       const filters = {};
-      //       if (
-      //             // (req.query.title !== "undefined")
-      //             req.fields.title
-      //       ) {
-      //             // filters.title = new RegExp(req.query.title, "i");
-      //             filters.title = new RegExp(req.fields.title, "i");
-      //       }
-
-      //       if (
-      //             // req.query.category !== "undefined" &&
-      //             // req.query.category !== "Catégories"
-      //             req.fields.category &&
-      //             req.fields.category !== "Catégories"
-      //       ) {
-      //             // Obtenir l'id de la catégory
-      //             let category = await Category.findOne({
-      //                   title: req.fields.category
-      //             });
-
-      //             console.log(category);
-      //             console.log(category._id);
-
-      //             filters.category = category._id;
-      //             // filters.category = {};
-      //             // filters.category.title = req.fields.category;
-      //       }
-      //       if (
-      //             // (req.query.priceMin !== "undefined")
-      //             req.fields.priceMin
-      //       ) {
-      //             filters.price = {};
-      //             // filters.price.$gte = req.query.priceMin;
-      //             filters.price.$gte = req.fields.priceMin;
-      //       }
-      //       if (
-      //             // (req.query.priceMax !== "undefined")
-      //             req.fields.priceMax
-      //       ) {
-      //             if (
-      //                   // (req.query.priceMax !== "----")
-      //                   req.fields.priceMax !== "----"
-      //             ) {
-      //                   if (filters.price === undefined) {
-      //                         filters.price = {};
-      //                   }
-      //                   // filters.price.$lte = req.query.priceMax;
-      //                   filters.price.$lte = req.fields.priceMax;
-      //             }
-      //       }
-      //       console.log(filters);
-      //       return filters;
-      // };
-
       try {
             let offers;
-            // let skip = req.query.skip;
+
             let skip = req.fields.skip;
-            // let limit = req.query.limit;
+
             let limit = req.fields.limit;
             let limitOk = Number(skip) + Number(limit);
 
-            if (
-                  // (req.query)
-                  req.fields
-            ) {
-                  // const filters = createFilters(req);
-                  console.log("Here we are");
-
+            if (req.fields) {
+                  // filter creation
                   const filters = {};
-                  if (
-                        // (req.query.title !== "undefined")
-                        req.fields.title
-                  ) {
-                        // filters.title = new RegExp(req.query.title, "i");
+                  if (req.fields.title) {
                         filters.title = new RegExp(req.fields.title, "i");
                   }
 
                   if (
-                        // req.query.category !== "undefined" &&
-                        // req.query.category !== "Catégories"
                         req.fields.category &&
                         req.fields.category !== "Catégories"
                   ) {
-                        // Obtenir l'id de la catégory
+                        // Get category's id
                         let category = await Category.findOne({
-                              title: req.fields.category
+                              title: req.fields.category,
                         });
-
                         filters.category = category._id;
-                        // filters.category = {};
-                        // filters.category.title = req.fields.category;
                   }
-                  if (
-                        // (req.query.priceMin !== "undefined")
-                        req.fields.priceMin
-                  ) {
+                  if (req.fields.priceMin) {
                         filters.price = {};
-                        // filters.price.$gte = req.query.priceMin;
                         filters.price.$gte = req.fields.priceMin;
                   }
-                  if (
-                        // (req.query.priceMax !== "undefined")
-                        req.fields.priceMax
-                  ) {
-                        if (
-                              // (req.query.priceMax !== "----")
-                              req.fields.priceMax !== "----"
-                        ) {
+                  if (req.fields.priceMax) {
+                        if (req.fields.priceMax !== "----") {
                               if (filters.price === undefined) {
                                     filters.price = {};
                               }
-                              // filters.price.$lte = req.query.priceMax;
+
                               filters.price.$lte = req.fields.priceMax;
                         }
                   }
@@ -141,37 +58,20 @@ router.post("/api/offers/with-count/", async (req, res) => {
                   // this populate allows front-end to get category.title
                   offers = await Offer.find(filters).populate("category");
 
-                  console.log(offers);
-
-                  if (
-                        // (req.query.sort !== "undefined")
-                        req.fields.sort
-                  ) {
-                        if (
-                              // (req.query.sort === "price-asc")
-                              req.fields.sort === "price-asc"
-                        ) {
-                              offers.sort(function(a, b) {
+                  if (req.fields.sort) {
+                        if (req.fields.sort === "price-asc") {
+                              offers.sort(function (a, b) {
                                     return a.price - b.price;
                               });
-                              // offers.sort({ price: 1 });
                         }
-                        if (
-                              // (req.query.sort === "price-desc")
-                              req.fields.sort === "price-desc"
-                        ) {
-                              offers.sort(function(a, b) {
+                        if (req.fields.sort === "price-desc") {
+                              offers.sort(function (a, b) {
                                     return b.price - a.price;
                               });
-                              // offers.sort({ price: -1 });
                         }
-                        if (
-                              // (req.query.sort === "date-desc")
-                              req.fields.sort === "date-desc"
-                        ) {
+                        if (req.fields.sort === "date-desc") {
                               console.log("On est bien ici");
-                              offers.sort(function(a, b) {
-                                    // return a.created - b.created;
+                              offers.sort(function (a, b) {
                                     var aa = a.created
                                                 .split("/")
                                                 .reverse()
@@ -182,16 +82,11 @@ router.post("/api/offers/with-count/", async (req, res) => {
                                                 .join();
                                     return bb < aa ? -1 : bb > aa ? 1 : 0;
                               });
-                              // offers.sort({ created: -1 });
                         }
 
-                        if (
-                              // (req.query.sort === "date-asc")
-                              req.fields.sort === "date-asc"
-                        ) {
+                        if (req.fields.sort === "date-asc") {
                               console.log("On est bien là");
-                              offers.sort(function(a, b) {
-                                    // return b.created - a.created;
+                              offers.sort(function (a, b) {
                                     var aa = a.created
                                                 .split("/")
                                                 .reverse()
@@ -202,7 +97,6 @@ router.post("/api/offers/with-count/", async (req, res) => {
                                                 .join();
                                     return aa < bb ? -1 : aa > bb ? 1 : 0;
                               });
-                              // offers.sort({ created: 1 });
                         }
                   }
             } else {
@@ -213,8 +107,7 @@ router.post("/api/offers/with-count/", async (req, res) => {
 
             let response = {
                   count: offers.length,
-                  // offers: offers
-                  offers: offers.slice(skip, limitOk)
+                  offers: offers.slice(skip, limitOk),
             };
             console.log(skip);
             console.log(limitOk);

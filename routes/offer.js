@@ -1,19 +1,19 @@
 const express = require("express");
 const formidableMiddleware = require("express-formidable");
 
-const SHA256 = require("crypto-js/sha256"); // Crypto hash generator
+const SHA256 = require("crypto-js/sha256");
 const encBase64 = require("crypto-js/enc-base64");
 const uid2 = require("uid2");
 
 const router = express.Router();
 router.use(formidableMiddleware());
 
-//Importation des modèles
+// Models import
 const Offer = require("../models/Offer");
 const User = require("../models/User");
 const Category = require("../models/Category");
 
-// Importation des middlewares
+// Middlewares import
 const authenticate = require("../middlewares/authenticate.js");
 const uploadPicture = require("../middlewares/uploadPicture.js");
 
@@ -47,7 +47,7 @@ router.get("/api/offer", async (req, res) => {
                   res.status(200).json([
                         offerToFind,
                         announcesNumber,
-                        tokenToSend
+                        tokenToSend,
                   ]);
             } else {
                   res.status(400).json({ message: "Product not found" });
@@ -75,7 +75,7 @@ router.post(
                   const { title, description, price, location } = req.fields;
 
                   const category = await Category.findOne({
-                        title: req.fields.category
+                        title: req.fields.category,
                   });
                   console.log(category);
                   const offer = new Offer({
@@ -83,7 +83,7 @@ router.post(
                         description,
                         price,
                         category,
-                        location
+                        location,
                         /* pictures: req.pictures */
                   });
                   offer.pictures = req.pictures;
@@ -161,7 +161,7 @@ router.post("/api/offer/update", async (req, res) => {
             let id = req.query.id;
             console.log(id);
             const category = await Category.findOne({
-                  title: req.fields.category
+                  title: req.fields.category,
             });
 
             console.log(category);

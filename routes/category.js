@@ -4,9 +4,8 @@ const bodyParser = require("body-parser");
 
 const router = express.Router();
 
-// Importation des modèles
+// Model import
 const Category = require("../models/Category");
-// const User = require("../models/User");
 
 // Read =======================================================================
 
@@ -16,10 +15,9 @@ router.post("/api/category/create", async (req, res) => {
       console.log("route category create OK");
       console.log(req.fields);
 
-      // console.log(req.body.title);
       try {
             const newCategory = new Category({
-                  title: req.fields.title
+                  title: req.fields.title,
             });
             await newCategory.save();
             res.status(200).json(newCategory);
