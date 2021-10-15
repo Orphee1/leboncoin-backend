@@ -34,6 +34,7 @@ router.post("/api/user/log_in", async (req, res) => {
                                     token: user.token,
                                     account: user.account,
                               });
+                              console.log("good response");
                         } else {
                               return res
                                     .status(401)
