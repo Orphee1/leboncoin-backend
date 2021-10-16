@@ -16,7 +16,7 @@ const {
 const authenticate = require('../middlewares/authenticate.js')
 const uploadPicture = require('../middlewares/uploadPicture.js')
 
-router.route('/').get(getOffer).post(authenticate, uploadPicture, createOffer)
-router.route('/:id').delete(deleteOffer).patch(updateOffer)
+router.route('/').post(authenticate, uploadPicture, createOffer)
+router.route('/:id').get(getOffer).delete(deleteOffer).patch(updateOffer)
 
 module.exports = router

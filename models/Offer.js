@@ -13,10 +13,10 @@ const OfferSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
-  created: {
-    type: String,
-    required: true,
-  },
+  // created: {
+  //   type: String,
+  //   required: true,
+  // },
   pictures: {
     type: String,
     default: '',
@@ -32,10 +32,10 @@ const OfferSchema = mongoose.Schema({
     default: '',
   },
 
-  creator: {
-    type: String,
-    required: true,
-  },
+  // creator: {
+  //   type: String,
+  //   required: true,
+  // },
 })
 
 module.exports = mongoose.model('Offer', OfferSchema)

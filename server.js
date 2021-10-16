@@ -10,6 +10,10 @@ app.use(formidableMiddleware())
 
 const connectDB = require('./db/connect')
 
+// Middlewares
+const notFound = require('./middlewares/notfound')
+const errorHandlerMiddleware = require('./middlewares/error-handler')
+
 // Loading Routes
 const offerRoutes = require('./routes/offer')
 const offersRoutes = require('./routes/offers')
@@ -18,19 +22,13 @@ const categoryRoutes = require('./routes/category')
 
 // Use Routes
 app.use('/api/v1/offer', offerRoutes)
-app.use('/api/v1/offers/with-count', offersRoutes)
+// app.use('/api/v1/offers/with-count', offersRoutes)
+app.use('/api/v1/offers', offersRoutes)
 app.use(userRoutes)
 app.use(categoryRoutes)
 
-// Test Route
-app.get('/', async (req, res) => {
-  try {
-    res.json({ message: 'hello Leboncoin' })
-  } catch (error) {
-    console.log(error.message)
-    res.status(400).json(error.message)
-  }
-})
+app.use(notFound)
+app.use(errorHandlerMiddleware)
 
 const start = async () => {
   try {
