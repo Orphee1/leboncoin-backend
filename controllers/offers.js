@@ -123,8 +123,7 @@ const getOffer = asyncWrapper(async (req, res, next) => {
 })
 
 const createOffer = asyncWrapper(async (req, res) => {
-  console.log('route publish OK')
-  console.log('here we are')
+  console.log(req.pictures)
   const { title, description, price, location } = req.fields
   console.log(title, description, price, location)
   const category = await Category.findOne({

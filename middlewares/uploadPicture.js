@@ -1,35 +1,27 @@
-const cloudinary = require("cloudinary").v2;
+const cloudinary = require('cloudinary').v2
+const { StatusCodes } = require('http-status-code')
 
-// Configuration de Cloudinary
 cloudinary.config({
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET
-});
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+})
 
-// const uploadPicture = (req, res, next) => {
-module.exports = (req, res, next) => {
-      try {
-            if (Object.keys(req.files).length) {
-                  cloudinary.uploader.upload(
-                        req.files.pictures.path, 
-                        async (error, result) => {
-                              if (error) {
-                                    return res.json({ error: "Upload Error" });
-                              } else {
-                                    req.pictures = await result.secure_url; 
-                                    next();
-                              }
-                        }
-                  );
-            } else {
-                  req.pictures = "";
-                  next();
-            }
-      } catch (e) {
-            console.log(e);
-            res.status(400).json({
-                  message: "An error occurred uploading picture"
-            });
-      }
-};
+const uploadPicture = async (req, res, next) => {
+  try {
+    const path = req.files.pictures.path
+    const result = await cloudinary.uploader.upload(path, {
+      use_filename: true,
+      folder: 'LE_BON_COIN',
+    })
+    req.pictures = await result.secure_url
+    next()
+  } catch (e) {
+    console.log(e)
+    res.status(StatusCodes.BAD_REQUEST).json({
+      message: 'An error occurred uploading picture',
+    })
+  }
+}
+
+module.exports = uploadPicture

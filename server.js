@@ -4,9 +4,12 @@ const express = require('express')
 const cors = require('cors')
 const app = express()
 const formidableMiddleware = require('express-formidable')
+const fileUpload = require('express-fileupload')
 
 app.use(cors())
 app.use(formidableMiddleware())
+// app.use(express.json())
+// app.use(fileUpload({ useTempFiles: true }))
 
 const connectDB = require('./db/connect')
 
