@@ -1,4 +1,4 @@
-// Models import
+const { StatusCodes } = require('http-status-codes')
 const Category = require('../models/Category')
 const Offer = require('../models/Offer')
 const User = require('../models/User')
@@ -10,54 +10,55 @@ const getAllOffers = asyncWrapper(async (req, res) => {
   console.log('Route offers OK')
 
   let offers
-  let skip = req.fields.skip
-  let limit = req.fields.limit
+  const { skip, limit, sort, category, priceMax, priceMin, title } = req.body
+  console.log(req.body)
   let limitOk = Number(skip) + Number(limit)
 
-  if (req.fields) {
-    // filter creation
+  if (req.body) {
     const filters = {}
-    if (req.fields.title) {
-      filters.title = new RegExp(req.fields.title, 'i')
+    if (req.body.title) {
+      filters.title = new RegExp(req.body.title, 'i')
     }
 
-    if (req.fields.category && req.fields.category !== 'Catégories') {
+    if (req.body.category && req.body.category !== 'Catégories') {
       // Get category's id
       let category = await Category.findOne({
-        title: req.fields.category,
+        title: req.body.category,
       })
       filters.category = category._id
     }
-    if (req.fields.priceMin) {
+    if (req.body.priceMin) {
       filters.price = {}
-      filters.price.$gte = req.fields.priceMin
+      filters.price.$gte = req.body.priceMin
     }
-    if (req.fields.priceMax) {
-      if (req.fields.priceMax !== '----') {
+    if (req.body.priceMax) {
+      if (req.body.priceMax !== '----') {
         if (filters.price === undefined) {
           filters.price = {}
         }
 
-        filters.price.$lte = req.fields.priceMax
+        filters.price.$lte = req.body.priceMax
       }
     }
     // console.log(filters)
 
     // this populate allows front-end to get category.title
-    offers = await Offer.find(filters).populate('category')
+    // offers = await Offer.find(filters).populate('category')
+    offers = await Offer.find()
+    console.log(offers)
 
-    if (req.fields.sort) {
-      if (req.fields.sort === 'price-asc') {
+    if (req.body.sort) {
+      if (req.body.sort === 'price-asc') {
         offers.sort(function (a, b) {
           return a.price - b.price
         })
       }
-      if (req.fields.sort === 'price-desc') {
+      if (req.body.sort === 'price-desc') {
         offers.sort(function (a, b) {
           return b.price - a.price
         })
       }
-      if (req.fields.sort === 'date-desc') {
+      if (req.body.sort === 'date-desc') {
         console.log('Here we are')
         offers.sort(function (a, b) {
           var aa = a.created.split('/').reverse().join(),
@@ -68,7 +69,7 @@ const getAllOffers = asyncWrapper(async (req, res) => {
         })
       }
 
-      if (req.fields.sort === 'date-asc') {
+      if (req.body.sort === 'date-asc') {
         console.log('So here we are')
         offers.sort(function (a, b) {
           var aa = a.created.split('/').reverse().join(),
@@ -90,10 +91,7 @@ const getAllOffers = asyncWrapper(async (req, res) => {
     count: offers.length,
     offers: offers.slice(skip, limitOk),
   }
-  // console.log(skip)
-  // console.log(limitOk)
 
-  // console.log(response);
   await res.json(response)
 })
 
@@ -123,56 +121,17 @@ const getOffer = asyncWrapper(async (req, res, next) => {
 })
 
 const createOffer = asyncWrapper(async (req, res) => {
-  console.log(req.pictures)
-  const { title, description, price, location } = req.fields
-  console.log(title, description, price, location)
-  const category = await Category.findOne({
-    // title: req.fields.category,
-    title: req.fields.category,
-  })
-  // console.log(category)
-  const offer = new Offer({
+  const pictures = req.pictures
+  const { title, description, price, location, category } = req.fields
+  const offer = await Offer.create({
     title,
     description,
     price,
-    category,
     location,
-    /* pictures: req.pictures */
+    category,
+    pictures,
   })
-  offer.pictures = req.pictures
-  // const date = new Date().toDateString();
-  const date = new Date()
-  let year = date.getFullYear()
-  let month = date.getMonth() + 1
-  let day = date.getDate()
-  let hour = date.getHours()
-  let min = date.getMinutes()
-
-  if (day < 10) {
-    day = `0${day.toString()}`
-  }
-
-  if (month < 10) {
-    month = `0${month.toString()}`
-  }
-
-  if (hour < 10) {
-    hour = `0${hour.toString()}`
-  }
-
-  if (min < 10) {
-    min = `0${min.toString()}`
-  }
-
-  let dateDisplay = ''
-  dateDisplay += day + '/' + month + '/' + year + ' à ' + hour + ':' + min
-
-  offer.created = dateDisplay
-  // offer.creator = user.username
-  console.log(offer)
-
-  await offer.save()
-  res.json({ message: 'Offer is published' })
+  res.status(StatusCodes.CREATED).json({ offer })
 })
 
 const deleteOffer = asyncWrapper(async (req, res, next) => {

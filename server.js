@@ -7,8 +7,8 @@ const formidableMiddleware = require('express-formidable')
 const fileUpload = require('express-fileupload')
 
 app.use(cors())
-app.use(formidableMiddleware())
-// app.use(express.json())
+// app.use(formidableMiddleware())
+app.use(express.json())
 // app.use(fileUpload({ useTempFiles: true }))
 
 const connectDB = require('./db/connect')
@@ -18,16 +18,15 @@ const notFound = require('./middlewares/notfound')
 const errorHandlerMiddleware = require('./middlewares/error-handler')
 
 // Loading Routes
-const offerRoutes = require('./routes/offer')
-const offersRoutes = require('./routes/offers')
-const userRoutes = require('./routes/user')
+const offerRoutes = require('./routes/offerRoutes')
+const offersRoutes = require('./routes/offersRoutes')
+const userRoutes = require('./routes/userRoutes')
 const categoryRoutes = require('./routes/category')
 
 // Use Routes
 app.use('/api/v1/offer', offerRoutes)
-// app.use('/api/v1/offers/with-count', offersRoutes)
-app.use('/api/v1/offers', offersRoutes)
-app.use(userRoutes)
+app.use('/api/v1/offers/with-count', offersRoutes)
+app.use('/api/v1/user/', userRoutes)
 app.use(categoryRoutes)
 
 app.use(notFound)

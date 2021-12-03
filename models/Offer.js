@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const OfferSchema = mongoose.Schema({
   title: {
     type: String,
-    required: true,
+    required: [true, 'A title must be provided'],
   },
   description: {
     type: String,
@@ -11,31 +11,46 @@ const OfferSchema = mongoose.Schema({
   },
   price: {
     type: Number,
-    required: true,
+    required: [true, 'A price must be provided'],
   },
-  // created: {
-  //   type: String,
-  //   required: true,
-  // },
   pictures: {
     type: String,
     default: '',
   },
-
   category: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
+    type: String,
+    enum: [
+      'Voitures',
+      'Motos',
+      'Caravaning',
+      'Utilitaires',
+      'Informatique',
+      'Consoles & Jeux vidéo',
+      'Image & Son',
+      'Téléphonie',
+      'Ameublement',
+      'Electroménager',
+      'Arts de la table',
+      'Articles de sport',
+      'Décoration',
+      'Linge de maison',
+      'Bricolage',
+      'Jardinage',
+      'Vêtements',
+    ],
   },
-
+  // category: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'Category',
+  // },
   location: {
     type: String,
     default: '',
   },
-
-  // creator: {
-  //   type: String,
-  //   required: true,
-  // },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
 })
 
 module.exports = mongoose.model('Offer', OfferSchema)
