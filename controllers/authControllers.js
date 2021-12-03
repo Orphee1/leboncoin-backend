@@ -2,8 +2,6 @@ const { StatusCodes } = require('http-status-codes')
 const User = require('../models/User')
 // const BadRequestError = require('../errors/bad-request')
 
-const SHA256 = require('sha256')
-
 const asyncWrapper = require('../middlewares/async')
 
 const register = asyncWrapper(async (req, res) => {

@@ -35,7 +35,6 @@
     "http-status-codes": "^2.1.4",
     "mongoose": "^5.11.10",
     "sha.js": "^2.4.11",
-    "sha256": "^0.2.0",
     "uid2": "0.0.3",
     "validator": "^13.7.0"
   },
