@@ -4,6 +4,7 @@ const Offer = require('../models/Offer')
 const User = require('../models/User')
 
 const { createCustomError } = require('../errors/custom-error')
+const { NotFoundError } = require('../errors')
 const asyncWrapper = require('../middlewares/async')
 
 const getAllOffers = asyncWrapper(async (req, res) => {
@@ -11,7 +12,7 @@ const getAllOffers = asyncWrapper(async (req, res) => {
 
   let offers
   const { skip, limit, sort, category, priceMax, priceMin, title } = req.body
-  console.log(req.body)
+
   let limitOk = Number(skip) + Number(limit)
 
   if (req.body) {
@@ -45,7 +46,7 @@ const getAllOffers = asyncWrapper(async (req, res) => {
     // this populate allows front-end to get category.title
     // offers = await Offer.find(filters).populate('category')
     offers = await Offer.find()
-    console.log(offers)
+    // console.log(offers)
 
     if (req.body.sort) {
       if (req.body.sort === 'price-asc') {
@@ -96,28 +97,33 @@ const getAllOffers = asyncWrapper(async (req, res) => {
 })
 
 const getOffer = asyncWrapper(async (req, res, next) => {
-  console.log('route Offer OK')
-
   const { id: offerId } = req.params
-  console.log(offerId)
-  // const offerToFind = await Offer.findById(offerId)
-  const offerToFind = await Offer.findOne({ _id: offerId })
-  if (!offerToFind) {
-    return next(createCustomError(`No item found with id n° ${offerId}`, 404))
+
+  // const offerTo{offerFind = await Offer.findById(offerId})
+  const offer = await Offer.findOne({ _id: offerId })
+  if (!offer) {
+    // return next(
+    //   createCustomError(
+    //     `Sorry, no offer found with this id: ${offerId}`,
+    //     StatusCodes.NOT_FOUND
+    //   )
+    // ) // pass the error to the errorHandlerMiddleware
+    throw new NotFoundError(`Sorry, no offer found with this id: ${offerId}`)
   }
-  let user = offerToFind.creator
-  // get all announces from the creator
-  const query = Offer.find({ creator: user }) //
-  query.getFilter()
-  const offersFromCreator = await query.exec()
-  const announcesNumber = offersFromCreator.length
-  console.log(announcesNumber)
+  //{offer let user = offer.creato}r
+  // // get all announces from the creator
+  // const query = Offer.find({ creator: user }) //
+  // query.getFilter()
+  // const offersFromCreator = await query.exec()
+  // const announcesNumber = offersFromCreator.length
+  // console.log(announcesNumber)
 
-  // get creator's token
-  const userToFind = await User.findOne({ username: user })
-  const tokenToSend = userToFind.token
+  // // get creator's token
+  // const userToFind = await User.findOne({ username: user })
+  // const tokenToSend = userToFind.token
 
-  res.status(200).json([offerToFind, announcesNumber, tokenToSend])
+  res.status(StatusCodes.OK).json({ offer })
+  res.status(200).json([offer, announcesNumber, tokenToSend])
 })
 
 const createOffer = asyncWrapper(async (req, res) => {
