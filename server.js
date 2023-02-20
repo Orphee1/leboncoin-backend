@@ -1,15 +1,14 @@
 require('dotenv').config()
-
 const express = require('express')
-const cors = require('cors')
 const app = express()
+const cors = require('cors')
 const formidableMiddleware = require('express-formidable')
 const fileUpload = require('express-fileupload')
 
 app.use(cors())
-// app.use(formidableMiddleware())
 app.use(express.json())
-// app.use(fileUpload({ useTempFiles: true }))
+app.use(formidableMiddleware())
+app.use(fileUpload({ useTempFiles: true }))
 
 const connectDB = require('./db/connect')
 
@@ -25,7 +24,7 @@ const categoryRoutes = require('./routes/category')
 
 // Use Routes
 app.use('/api/v1/offer', offerRoutes)
-app.use('/api/v1/offers/with-count', offersRoutes)
+app.use('/api/v1/offers', offersRoutes)
 app.use('/api/v1/user/', userRoutes)
 app.use(categoryRoutes)
 

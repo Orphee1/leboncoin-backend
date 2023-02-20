@@ -8,8 +8,11 @@ const { NotFoundError } = require('../errors')
 const asyncWrapper = require('../middlewares/async')
 
 const getAllOffers = asyncWrapper(async (req, res) => {
-  const { skip, limit, sort, category, priceMax, priceMin, title } = req.body
-  let limitOk = Number(skip) + Number(limit)
+  console.log(req.query)
+
+  const { skip, limit, sort, category, priceMax, priceMin, title } = req.query
+  const limitOk = Number(skip) + Number(limit)
+  console.log(limitOk)
   const queryObject = {}
   if (title) {
     queryObject.title = new RegExp(title, 'i')
@@ -28,12 +31,14 @@ const getAllOffers = asyncWrapper(async (req, res) => {
   // console.log(queryObject)
 
   let result = Offer.find(queryObject)
+
   if (sort) {
     let sortedBy
     if (sort === 'price-asc') {
       sortedBy = 'price'
     }
     if (sort === 'price-desc') {
+      console.log('here we are')
       sortedBy = '-price'
     }
     if (sort === 'date-asc') {
@@ -47,12 +52,10 @@ const getAllOffers = asyncWrapper(async (req, res) => {
 
   const offers = await result
 
-  let response = {
+  res.status(200).json({
     count: offers.length,
-    offers: offers.slice(skip, limitOk),
-  }
-
-  res.status(200).json(response)
+    offers: offers.slice(Number(skip), limitOk),
+  })
 })
 
 const getOffer = asyncWrapper(async (req, res, next) => {
@@ -62,15 +65,9 @@ const getOffer = asyncWrapper(async (req, res, next) => {
   // const offerTo{offerFind = await Offer.findById(offerId})
   const offer = await Offer.findOne({ _id: offerId })
   if (!offer) {
-    // return next(
-    //   createCustomError(
-    //     `Sorry, no offer found with this id: ${offerId}`,
-    //     StatusCodes.NOT_FOUND
-    //   )
-    // ) // pass the error to the errorHandlerMiddleware
     throw new NotFoundError(`Sorry, no offer found with this id: ${offerId}`)
   }
-  //{offer let user = offer.creato}r
+  //{offer let user = offer.creator
   // // get all announces from the creator
   // const query = Offer.find({ creator: user }) //
   // query.getFilter()
@@ -82,8 +79,11 @@ const getOffer = asyncWrapper(async (req, res, next) => {
   // const userToFind = await User.findOne({ username: user })
   // const tokenToSend = userToFind.token
 
+  let announcesNumber = 6
+
+  res.status(StatusCodes.OK).json({ offer, announcesNumber })
   // res.status(StatusCodes.OK).json({ offer })
-  res.status(200).json([offer, announcesNumber, tokenToSend])
+  // res.status(200).json([offer, announcesNumber, tokenToSend])
 })
 
 const createOffer = asyncWrapper(async (req, res) => {

@@ -4,6 +4,6 @@ const router = express.Router()
 // Controllers import
 const { getAllOffers } = require('../controllers/offersController')
 
-router.route('/').post(getAllOffers)
+router.route('/').get(getAllOffers)
 
 module.exports = router
