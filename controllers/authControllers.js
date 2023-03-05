@@ -85,7 +85,6 @@ const login = asyncWrapper(async (req, res) => {
   const tokenUser = createTokenUser(user)
   const token = createJWT({ payload: tokenUser })
   res.status(StatusCodes.OK).json({ user: tokenUser, token })
-  // res.status(StatusCodes.OK).json({ msg: 'All right dude!' })
 })
 
 const verifyEmail = asyncWrapper(async (req, res) => {
